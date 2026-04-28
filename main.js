@@ -1,4 +1,4 @@
-import { extractLink } from './api.js';
+import { extractLink } from './api.js?v=1.1';
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.getElementById('search-form');
