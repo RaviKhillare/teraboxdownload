@@ -38,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.thumbnail) {
                 fileThumbnail.innerHTML = `<img src="${result.thumbnail}" alt="Thumbnail">`;
             } else {
-                fileThumbnail.innerHTML = `<i data-lucide="video" size="32"></i>`;
-                // Re-render icons since we added new ones
-                if (window.lucide) window.lucide.createIcons();
+                fileThumbnail.innerHTML = `<div class="icon-placeholder"><i data-lucide="video"></i></div>`;
             }
             
             downloadBtn.href = result.downloadUrl;
@@ -49,26 +47,47 @@ document.addEventListener('DOMContentLoaded', () => {
             statusEl.style.display = 'none';
             resultsContainer.style.display = 'block';
             
+            // Re-render icons if needed
+            if (window.lucide) window.lucide.createIcons();
+            
         } catch (error) {
-            statusEl.innerHTML = `<span style="color: var(--error)">Error: ${error.message}</span>`;
+            statusEl.innerHTML = `
+                <div class="status-error">
+                    <i data-lucide="alert-circle"></i>
+                    <span>${error.message}</span>
+                </div>
+            `;
             statusEl.style.display = 'block';
+            if (window.lucide) window.lucide.createIcons();
         } finally {
             submitBtn.disabled = false;
         }
     });
 
-    // Handle Paste from Clipboard on click (optional nice feature)
-    linkInput.addEventListener('click', async () => {
-        if (linkInput.value === '') {
+    // Paste from Clipboard functionality
+    const pasteBtn = document.getElementById('paste-btn');
+    if (pasteBtn) {
+        pasteBtn.addEventListener('click', async () => {
             try {
-                // Browsers might block this without permission
-                // const text = await navigator.clipboard.readText();
-                // if (text.includes('terabox') || text.includes('diskwala')) {
-                //     linkInput.value = text;
-                // }
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    linkInput.value = text;
+                    linkInput.focus();
+                }
             } catch (err) {
-                // Ignore
+                console.error('Failed to read clipboard:', err);
             }
-        }
-    });
+        });
+    }
+
+    // Clear input functionality
+    const clearBtn = document.getElementById('clear-btn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            linkInput.value = '';
+            linkInput.focus();
+            resultsContainer.style.display = 'none';
+            statusEl.style.display = 'none';
+        });
+    }
 });

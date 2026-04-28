@@ -1,5 +1,6 @@
 const API_ENDPOINTS = {
-    TERABOX: 'https://ab-terabox-api.vercel.app/api?url=',
+    TERABOX: 'https://tera-core.vercel.app/api?url=',
+    TERABOX_FALLBACK: 'https://terabox-api.p-v.workers.dev/api?url=',
     DISKWALA: 'https://thediskwala.com/api/diskwala?url='
 };
 
@@ -42,25 +43,47 @@ export function identifyProvider(url) {
 /**
  * Extract download link from Terabox
  * @param {string} url 
+ * @param {boolean} useFallback
  */
-async function fetchTerabox(url) {
-    const targetUrl = API_ENDPOINTS.TERABOX + encodeURIComponent(url);
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+async function fetchTerabox(url, useFallback = false) {
+    const apiBase = useFallback ? API_ENDPOINTS.TERABOX_FALLBACK : API_ENDPOINTS.TERABOX;
+    const targetUrl = apiBase + encodeURIComponent(url);
     
-    const response = await fetch(proxyUrl);
-    const data = await response.json();
-    
-    if (data.status === 'success' && data.files && data.files.length > 0) {
-        const file = data.files[0];
-        return {
-            title: file.filename || 'Terabox Video',
-            size: file.size || 'Unknown',
-            thumbnail: file.thumbnail || null,
-            downloadUrl: file.download_link,
-            originalData: data
-        };
+    try {
+        const response = await fetch(targetUrl);
+        const data = await response.json();
+        
+        if (data.status === 'success' && data.files && data.files.length > 0) {
+            const file = data.files[0];
+            
+            // Handle different thumbnail formats
+            let thumbnail = file.thumbnail;
+            if (file.thumbnails && typeof file.thumbnails === 'object') {
+                thumbnail = file.thumbnails['400'] || file.thumbnails['800'] || Object.values(file.thumbnails)[0];
+            }
+
+            return {
+                title: file.filename || 'Terabox Video',
+                size: file.size || 'Unknown',
+                thumbnail: thumbnail || null,
+                downloadUrl: file.download_link,
+                originalData: data
+            };
+        }
+        
+        // If 31045 error and we haven't tried fallback yet
+        if (data.error_code === 31045 && !useFallback) {
+            console.log('Primary API session expired, trying fallback...');
+            return await fetchTerabox(url, true);
+        }
+
+        throw new Error(data.message || data.error_msg || 'Failed to extract Terabox link. The file might be private or deleted.');
+    } catch (error) {
+        if (!useFallback) {
+            return await fetchTerabox(url, true);
+        }
+        throw error;
     }
-    throw new Error(data.message || 'Failed to extract Terabox link. The file might be private or deleted.');
 }
 
 /**

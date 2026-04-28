@@ -34,9 +34,18 @@
             <div class="search-container glass-card">
                 <form id="search-form">
                     <div class="input-wrapper">
+                        <i data-lucide="link" class="input-icon"></i>
                         <input type="url" id="link-input" placeholder="Paste your Terabox or Diskwala link here..." required autocomplete="off">
+                        <div class="input-actions">
+                            <button type="button" id="clear-btn" class="icon-btn" title="Clear input">
+                                <i data-lucide="x"></i>
+                            </button>
+                            <button type="button" id="paste-btn" class="icon-btn" title="Paste from clipboard">
+                                <i data-lucide="clipboard"></i>
+                            </button>
+                        </div>
                         <button type="submit" id="submit-btn" class="btn-primary">
-                            <span>Extract Link</span>
+                            <span>Extract</span>
                             <i data-lucide="arrow-right"></i>
                         </button>
                     </div>
