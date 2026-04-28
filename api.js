@@ -1,5 +1,5 @@
 const API_ENDPOINTS = {
-    TERABOX: 'https://terabox-dl-arman.vercel.app/api?data=',
+    TERABOX: 'https://ab-terabox-api.vercel.app/api?url=',
     DISKWALA: 'https://thediskwala.com/api/diskwala?url='
 };
 
@@ -47,18 +47,17 @@ async function fetchTerabox(url) {
     const response = await fetch(API_ENDPOINTS.TERABOX + encodeURIComponent(url));
     const data = await response.json();
     
-    if (data.status === 'success' && data.data) {
-        // The API returns an array or object usually
-        const file = Array.isArray(data.data) ? data.data[0] : data.data;
+    if (data.status === 'success' && data.files && data.files.length > 0) {
+        const file = data.files[0];
         return {
             title: file.filename || 'Terabox Video',
             size: file.size || 'Unknown',
-            thumbnail: file.thumb || null,
-            downloadUrl: file.download_link || file.dlink,
+            thumbnail: file.thumbnail || null,
+            downloadUrl: file.download_link,
             originalData: data
         };
     }
-    throw new Error(data.message || 'Failed to extract Terabox link');
+    throw new Error(data.message || 'Failed to extract Terabox link. The file might be private or deleted.');
 }
 
 /**
