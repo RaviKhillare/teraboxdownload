@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Downloader | Terabox & Diskwala Video Downloader</title>
+    <meta name="description" content="Download videos directly from Terabox, 1024terabox, Diskwala and more with high speed.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Infinity Downloader</h1>
+            <p class="subtitle">Extract and download videos instantly from Terabox, Diskwala, and all their variants. No ads, no limits.</p>
+        </header>
+
+        <main>
+            <div class="search-container glass-card">
+                <form id="search-form">
+                    <div class="input-wrapper">
+                        <input type="url" id="link-input" placeholder="Paste your Terabox or Diskwala link here..." required autocomplete="off">
+                        <button type="submit" id="submit-btn" class="btn-primary">
+                            <span>Extract Link</span>
+                            <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="status" class="status"></div>
+
+                <div id="results-container" class="results-container">
+                    <div class="glass-card result-card">
+                        <div class="file-info">
+                            <div id="file-thumbnail" class="thumbnail">
+                                <i data-lucide="video" size="32"></i>
+                            </div>
+                            <div class="file-details">
+                                <h3 id="file-title">Video Title</h3>
+                                <div class="file-meta">
+                                    <span id="file-size">Size: Unknown</span>
+                                    <span>•</span>
+                                    <span>Direct Link Ready</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="download-actions">
+                            <a href="#" id="download-btn" class="btn-download btn-direct" target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="download"></i>
+                                Download Video
+                            </a>
+                            <button class="btn-download btn-outline" onclick="location.reload()">
+                                <i data-lucide="refresh-cw"></i>
+                                New Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="features">
+                <div class="feature-item">
+                    <div class="feature-icon"><i data-lucide="zap"></i></div>
+                    <h3>Fast Extraction</h3>
+                    <p>Bypass waiting times and get direct download links instantly.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+                    <h3>Secure</h3>
+                    <p>We don't store your files or data. All processing is transient.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i data-lucide="globe"></i></div>
+                    <h3>Multi-Domain</h3>
+                    <p>Supports 1024terabox, teraboxapp, diskwala.link, and more.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer style="text-align: center; margin-top: 4rem; padding: 2rem; color: var(--text-secondary); font-size: 0.875rem;">
+            <p>&copy; 2026 Infinity Downloader. Built for high-speed file access.</p>
+        </footer text-align="center" margin-top="4rem" padding="2rem" color="var(--text-secondary)" font-size="0.875rem">
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
