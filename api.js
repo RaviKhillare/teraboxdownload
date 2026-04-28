@@ -45,13 +45,10 @@ export function identifyProvider(url) {
  */
 async function fetchTerabox(url) {
     const targetUrl = API_ENDPOINTS.TERABOX + encodeURIComponent(url);
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
     
     const response = await fetch(proxyUrl);
-    const proxyData = await response.json();
-    
-    // AllOrigins returns the original response body as a string in 'contents'
-    const data = JSON.parse(proxyData.contents);
+    const data = await response.json();
     
     if (data.status === 'success' && data.files && data.files.length > 0) {
         const file = data.files[0];
