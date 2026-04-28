@@ -1,6 +1,6 @@
 const API_ENDPOINTS = {
-    TERABOX: 'https://tera-core.vercel.app/api?url=',
-    TERABOX_FALLBACK: 'https://terabox-api.p-v.workers.dev/api?url=',
+    TERABOX: 'https://1024teradownloader.com/api/get-info?url=',
+    TERABOX_FALLBACK: 'https://tera-core.vercel.app/api?url=',
     DISKWALA: 'https://thediskwala.com/api/diskwala?url='
 };
 
@@ -53,10 +53,21 @@ async function fetchTerabox(url, useFallback = false) {
         const response = await fetch(targetUrl);
         const data = await response.json();
         
-        if (data.status === 'success' && data.files && data.files.length > 0) {
+        // Handle 1024teradownloader format (Primary)
+        if (!useFallback && data.status === 'success' && data.list && data.list.length > 0) {
+            const file = data.list[0];
+            return {
+                title: file.name || 'Terabox Video',
+                size: file.size_formatted || 'Unknown',
+                thumbnail: file.thumbnail || null,
+                downloadUrl: file.normal_dlink,
+                originalData: data
+            };
+        }
+
+        // Handle tera-core format (Fallback)
+        if (useFallback && data.status === 'success' && data.files && data.files.length > 0) {
             const file = data.files[0];
-            
-            // Handle different thumbnail formats
             let thumbnail = file.thumbnail;
             if (file.thumbnails && typeof file.thumbnails === 'object') {
                 thumbnail = file.thumbnails['400'] || file.thumbnails['800'] || Object.values(file.thumbnails)[0];
@@ -71,9 +82,9 @@ async function fetchTerabox(url, useFallback = false) {
             };
         }
         
-        // If 31045 error and we haven't tried fallback yet
-        if (data.error_code === 31045 && !useFallback) {
-            console.log('Primary API session expired, trying fallback...');
+        // If 31045 error or no files found, try fallback
+        if ((data.error_code === 31045 || !data.list || data.list.length === 0) && !useFallback) {
+            console.log('Primary API failed or session expired, trying fallback...');
             return await fetchTerabox(url, true);
         }
 
