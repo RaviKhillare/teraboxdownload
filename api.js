@@ -44,8 +44,14 @@ export function identifyProvider(url) {
  * @param {string} url 
  */
 async function fetchTerabox(url) {
-    const response = await fetch(API_ENDPOINTS.TERABOX + encodeURIComponent(url));
-    const data = await response.json();
+    const targetUrl = API_ENDPOINTS.TERABOX + encodeURIComponent(url);
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+    
+    const response = await fetch(proxyUrl);
+    const proxyData = await response.json();
+    
+    // AllOrigins returns the original response body as a string in 'contents'
+    const data = JSON.parse(proxyData.contents);
     
     if (data.status === 'success' && data.files && data.files.length > 0) {
         const file = data.files[0];
